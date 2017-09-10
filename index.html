@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!-- dachu development build -->
+<html>
+	<head>
+		<link rel="shortcut icon" href="dachu.ico" type="image/x-icon" />
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<style>
+		canvas {
+			image-rendering: optimizeSpeed;             /* Older versions of FF          */
+			image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+			image-rendering: -webkit-optimize-contrast; /* Safari                        */
+			image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+			image-rendering: pixelated;                 /* Awesome future-browsers       */
+			-ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+		}
+		</style>
+		<title>dachu js13kg</title>
+	</head>
+	<body>
+		<script src="dachu_executable.js"></script>
+		<script src="dachu_data.js"></script>
+		<script src="dachu_input.js"></script>
+		<script src="dachu_tilemap.js"></script>
+		<script src="dachu_bg.js"></script>
+		<script src="dachu_physics.js"></script>
+		<script src="dachu_player.js"></script>
+		<script src="dachu_cutil.js"></script>
+		<script>var dachugame = new Dachu(); dachugame.start();</script>
+	</body>
+</html>
