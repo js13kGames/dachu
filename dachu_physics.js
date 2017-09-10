@@ -81,7 +81,7 @@ Dachu.prototype.collideplayer = function() {
 		this.jumpreset = true;
 	}
 	if (top1 || top2) {
-		this.ply.vel.y = 0;
+		this.ply.vel.y = 0.1;
 	}
 	if (left1 || left2) {
 		this.ply.pos.x = Math.floor(this.ply.pos.x)-this.ply.vel.x+0.5;

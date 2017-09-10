@@ -105,6 +105,7 @@ var Dachu = function () {
 				this.stage = 3;
 				this.ply.pos.x = 3*32;
 				this.ply.pos.y = 6*32;
+				this.ply.vel.y = 0;
 			}
 		}
 		if (this.stage == 3) {

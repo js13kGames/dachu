@@ -16,7 +16,7 @@ HELLO THERE, AN ASTEROID SEEMS TO HAVE CRASHED INTO MY SHIP. I NEED TO FIX IT AN
 
 WHY NOT CHECK IT OUT?
 
-[LET'S GO!](https://nesrak1.github.io/dachu/)
+[LET'S GO!](https://nesrak1.github.io/dachu/index.html)
 
 ## CREDITS:
 * PHASE2 BY [BUCH](https://opengameart.org/users/buch) at [OPENGAMEART](https://opengameart.org/content/platformer-tiles-4)
