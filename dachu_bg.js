@@ -92,7 +92,7 @@ Dachu.prototype.drawCursor = function () {
 };
 
 Dachu.prototype.drawText = function (text, x, y, sx, sy, s) {
-	var tl = "ABCDEFGHIJKLMNOPQRSTUVWXYZ.,? ";
+	var tl = "ABCDEFGHIJKLMNOPQRSTUVWXYZ.,?=+ ";
 	for (var i = 0; i < text.length; i++) {
 		this.ctx.drawImage(font, tl.indexOf(text[i])*5, 0, 5, 5, x+i*s, y, sx, sy);
 	}

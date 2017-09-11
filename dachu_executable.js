@@ -59,6 +59,7 @@ var Dachu = function () {
 	this.start = function() {
 		this.pollInput();
 		this.generateStars();
+		this.readMusic(title);
 		this.update();
 	};
 	this.update = function() {
@@ -75,6 +76,7 @@ var Dachu = function () {
 		}
 		if (this.stage == 1) {
 			bc("#000011", this.ctx);
+			this.stopmusic = 1;
 			this.drawStars();
 			this.drawUFO();
 			if (this.waittimer > 0) {
@@ -96,8 +98,8 @@ var Dachu = function () {
 		}
 		if (this.stage == 2) {
 			bc("#000011", this.ctx);
-			this.drawText("MOVE    JUMP", 0-this.cam.x+400, 250, 20, 20, 15);
-			this.drawText("WASD   SPACE", 0-this.cam.x+400, 300, 20, 20, 15);
+			this.drawText("MOVE = WASD", 0-this.cam.x+400, 250, 20, 20, 15);
+			this.drawText("JUMP = SPACE", 0-this.cam.x+400, 300, 20, 20, 15);
 			this.drawMoon();
 			this.drawPortal(43, 3);
 			if (this.ply.pos.x > (43*32)) {
@@ -109,7 +111,13 @@ var Dachu = function () {
 			}
 		}
 		if (this.stage == 3) {
-			bc("#f1e767", this.ctx);
+			var grd = this.ctx.createLinearGradient(0, 0, 0, 480);
+			grd.addColorStop(0, "#ffffd8");
+			grd.addColorStop(1, "#ffd04f");
+			var fs = this.ctx.fillStyle;
+			this.ctx.fillStyle = grd;
+			this.ctx.fillRect(0, 0, 640, 480);
+			this.ctx.fillStyle = fs;
 		}
 		if (this.stage == 2 || this.stage == 3) {
 			this.drawTerrain();
@@ -147,7 +155,7 @@ var Dachu = function () {
 			data.push(c);
 		}
 		return data;
-	}
+	};
 	//</editor-fold>
 
 	//<editor-fold> tilemap

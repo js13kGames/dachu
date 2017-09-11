@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<!-- dachu development build -->
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<style>
+		canvas{image-rendering:optimizeSpeed;image-rendering:-moz-crisp-edges;image-rendering:-webkit-optimize-contrast;image-rendering:-o-crisp-edges;image-rendering:pixelated;-ms-interpolation-mode:nearest-neighbor}
+		</style>
+		<title>dachu music test js13kg</title>
+	</head>
+	<body>
+		<script>
+		var actx = new(window.AudioContext || window.webkitAudioContext)();
+		
+		var instd = Array(3);
+		for (var i=0;i<3;i++)instd[i]=Array();
+		function decompressString(str) {
+			var data = [];
+			for (var i = 0; i < str.length; i++) {
+				var c = str.charCodeAt(i) - 35;
+				if (c == 0) {
+					data.push(NaN);
+					continue;
+				}
+				data.push(c);
+			}
+			return data;
+		}
+		
+		function playSound(num, ms, inst) {
+			if (typeof num === "undefined") return;
+			var osc = actx.createOscillator();
+			osc.connect(actx.destination);
+			osc.type = inst == 2 ? "triangle" : "sine"; //cheap, I know
+			osc.frequency.value = Math.pow(Math.pow(2,(1/12)),(num-33))*440;
+			osc.start();
+			osc.stop(actx.currentTime+(ms/1000));
+		}
+		
+		function readMusic(data) {
+			var wait = parseInt(data.slice(0,3));
+			var loopend = parseInt(data.slice(3,5));
+			var loopstart = parseInt(data.slice(5,7));
+			var data = decompressString(data.substring(7));
+			var inst = 0;
+			var mode = 0;
+			var seek = 0;
+			for(var i=0;i<data.length;i++)data[i]=data[i]-1;
+			for(var j=0;j<data.length;j+=2) {
+				if (data[j]==50) {
+					inst = data[j+1];
+					seek = 0;
+				} else if (data[j]==51) {
+					mode = data[j+1];
+				} else if (data[j]==52) {
+					seek += data[j+1]*3;
+				} else {
+					instd[inst][seek] = data[j];
+					instd[inst][seek+1] = data[j+1];
+					instd[inst][seek+2] = mode;
+					seek += 3*data[j+1];
+				}
+			}
+			
+			var tick = 0;
+			setInterval(function() {
+				for(var k=0;k<3;k++) {
+					playSound(instd[k][tick],180*instd[k][tick+1],k);
+				}
+				tick+=3;
+				if(tick>loopend*3*16)tick=loopstart*3*16;
+			}, wait);
+		}
+		
+		readMusic("1801701V$+4+T&,*,+T&,*,+4)4'4&4+4)4'4&4V%X4O(J(K(F(H(E(F(C0X<O(J(K(F(H(E(F(C0X<>,<,:,9,7,5,7,B,C,A,?,>,<,:(9(6(7(9,V&XdXt7&9&:&9&7&9&:&9&3&5&7&2&>&<&:&9&7&9&:&9&7&9&:&9&2&2&2&2&>&<&:&9&7&9&:&9&7&9&:&9&3&5&7&2&>&<&:&9&7&9&:&9&7&9&:&9&2&2&2&2&>&<&:&9&");
+		</script>
+	</body>
+</html>

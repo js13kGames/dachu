@@ -1,0 +1,19 @@
+orgx, extremely tiny org clone
+
+header
+------
+TTT - tempo in ascii numbers
+MM - music ends, loop to specificed measure
+MM - mesaure to loop back to in ascii numbers
+
+data
+------
+32[IT] - switch instrument
+33[MD] - switch mode (0 - regular volume, 1 - decay)
+34[LT] - rest length
+[NN][LL] - note and length (0 = C1)
+
+converting from org to orgx
+---------------------------
+there is currently no program to convert from org to orgx
+you must manually convert each note in a hex editor like I did
