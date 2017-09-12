@@ -29,6 +29,7 @@ var Dachu = function () {
 		hasgun: false,
 		keysdown: {}
 	};
+	this.creatures = [];
 	this.stage = 0;
 	//</editor-fold>
 
@@ -59,6 +60,7 @@ var Dachu = function () {
 	this.start = function() {
 		this.pollInput();
 		this.generateStars();
+		this.populateEnemies();
 		this.readMusic(title);
 		this.update();
 	};
@@ -98,10 +100,16 @@ var Dachu = function () {
 		}
 		if (this.stage == 2) {
 			bc("#000011", this.ctx);
-			this.drawText("MOVE = WASD", 0-this.cam.x+400, 250, 20, 20, 15);
-			this.drawText("JUMP = SPACE", 0-this.cam.x+400, 300, 20, 20, 15);
 			this.drawMoon();
+			this.drawText("MOVE = WASD", 0-this.cam.x+400, 250, 20, 20, 15);
+			this.drawText("JUMP = SPACE", 0-this.cam.x+700, 250, 20, 20, 15);
+			this.drawText("BIG JUMP = HOLD SPACE", 0-this.cam.x+1000, 150, 20, 20, 15);
 			this.drawPortal(43, 3);
+			if (this.ply.pos.x > (33*32)) {
+				this.drawText("LOOKS LIKE SOMEONE", 0-this.cam.x+1500, 150, 20, 20, 15);
+				this.drawText("STOLE MY SHIP ...", 0-this.cam.x+1500, 200, 20, 20, 15);
+				this.drawText("AND LEFT THIS PORTAL", 0-this.cam.x+1500, 250, 20, 20, 15);
+			}
 			if (this.ply.pos.x > (43*32)) {
 				this.loadMap(1);
 				this.stage = 3;
@@ -122,9 +130,11 @@ var Dachu = function () {
 		if (this.stage == 2 || this.stage == 3) {
 			this.drawTerrain();
 			this.drawPlayer();
+			if (this.stage == 3) this.drawBlobos();
 			this.drawGun();
 			this.updateCamera();
 			this.movePlayer();
+			if (this.stage == 3) this.moveBlobos();
 			if (this.fadeframe != 0) {
 				this.fadeIn();
 			}

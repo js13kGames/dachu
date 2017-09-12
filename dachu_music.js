@@ -20,23 +20,18 @@ Dachu.prototype.fd = function(i) {
 Dachu.prototype.playSound = function(num, time, inst) {
 	if (this.oscs[inst]) {
 		if (this.osct[inst] == 0) {
-			//this.oscs[inst].stop();
 			this.fd(inst);
 		} else {
 			this.osct[inst]--;
 		}
 	}
 	if (typeof num === "undefined") return;
-	if (this.oscs[inst]) {
-		console.log("stop");
-		this.fd(inst);
-	}
+	if (this.oscs[inst]) this.fd(inst);
 	this.gain(inst);
 	var osc = this.actx.createOscillator();
 	osc.connect(this.gains[inst]);
 	osc.type = inst == 2 ? "triangle" : "sine"; //cheap, I know
 	osc.frequency.value = Math.pow(Math.pow(2,(1/12)),(num-33))*440;
-	console.log(osc.frequency.value);
 	this.oscs[inst] = osc;
 	this.osct[inst] = time;
 	osc.start();
@@ -85,6 +80,12 @@ Dachu.prototype.readMusic = function(str) {
 		tick+=3;
 		if(tick>loopend*3*16)tick=loopstart*3*16;
 		if(that.stopmusic) {
+			for(var l=0;l<3;l++) {
+				if(that.oscs[l])that.oscs[l].stop();
+			}
+			that.oscs = [];
+			that.osct = [];
+			that.gains = [];
 			that.instd = Array(3);
 			for (var i=0;i<3;i++)that.instd[i]=Array();
 			tick = 0;
