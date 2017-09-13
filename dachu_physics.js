@@ -51,21 +51,19 @@ Dachu.prototype.animateplayer = function() {
 	this.ply.framewait--;
 }
 
-//todo refactor and make original
-Dachu.prototype.collideplayer = function() {
-	//make the aabb larger as you move
-    var tX = this.ply.pos.x + this.ply.vel.x;
-    var tY = this.ply.pos.y + this.ply.vel.y;
+Dachu.prototype.calculateAABB = function(posx, posy, velx, vely) {
+    var tX = posx + velx;
+    var tY = posy + vely;
 
     var t_y_up   = Math.floor(tY / this.tileSize);
     var t_y_down = Math.ceil(tY / this.tileSize);
-    var y_near1  = Math.round((this.ply.pos.y - 15) / this.tileSize);
-    var y_near2  = Math.round((this.ply.pos.y + 15) / this.tileSize);
+    var y_near1  = Math.round((posy - 15) / this.tileSize);
+    var y_near2  = Math.round((posy + 15) / this.tileSize);
 
     var t_x_left  = Math.floor(tX / this.tileSize);
     var t_x_right = Math.ceil(tX / this.tileSize);
-    var x_near1   = Math.round((this.ply.pos.x - 15) / this.tileSize);
-    var x_near2   = Math.round((this.ply.pos.x + 15) / this.tileSize);
+    var x_near1   = Math.round((posx - 15) / this.tileSize);
+    var x_near2   = Math.round((posx + 15) / this.tileSize);
 
 	var top1    = this.isSolid(x_near1, t_y_up);
     var top2    = this.isSolid(x_near2, t_y_up);
@@ -75,21 +73,57 @@ Dachu.prototype.collideplayer = function() {
     var left2   = this.isSolid(t_x_left, y_near2);
     var right1  = this.isSolid(t_x_right, y_near1);
     var right2  = this.isSolid(t_x_right, y_near2);
+	
+    return {
+    	bottom: bottom1 || bottom2,
+    	top: top1 || top2,
+    	left: left1 || left2,
+    	right: right1 || right2
+    };
+}
 
-	if (bottom1 || bottom2) {
+//all from the platformer codepen
+Dachu.prototype.collideplayer = function() {
+	var aabb = this.calculateAABB(
+		this.ply.pos.x, this.ply.pos.y,
+		this.ply.vel.x, this.ply.vel.y);
+
+	if (aabb.bottom) {
 		this.ply.vel.y = 0;
 		this.jumpreset = true;
 	}
-	if (top1 || top2) {
+	if (aabb.top) {
 		this.ply.vel.y = 0.1;
 	}
-	if (left1 || left2) {
+	if (aabb.left) {
 		this.ply.pos.x = Math.floor(this.ply.pos.x)-this.ply.vel.x+0.5;
 		this.ply.vel.x = 0;
 	}
-	if (right1 || right2) {
+	if (aabb.right) {
 		this.ply.pos.x = Math.ceil(this.ply.pos.x)-this.ply.vel.x-0.5;
 		this.ply.vel.x = 0;
+	}
+};
+
+Dachu.prototype.collideblobo = function(creature) {
+	var aabb = this.calculateAABB(
+		creature.x, creature.y,
+		creature.vx, creature.vy);
+
+	if (aabb.bottom) {
+		creature.vy = 0;
+		creature.jumping = false;
+	}
+	if (aabb.top) {
+		creature.vy = 0.0;
+	}
+	if (aabb.left) {
+		creature.x = Math.floor(creature.x)-creature.vx+1.5;
+		creature.vx = 0;
+	}
+	if (aabb.right) {
+		creature.x = Math.ceil(creature.x)-creature.vx-1.5;
+		creature.vx = 0;
 	}
 };
 

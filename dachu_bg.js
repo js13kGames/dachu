@@ -80,6 +80,15 @@ Dachu.prototype.fadeIn = function () {
 	this.fadeframe -= 5;
 };
 
+Dachu.prototype.flashIn = function () {
+	if (this.flashframe == 0) this.flashframe = 100;
+	var a = this.flashframe/100;
+	this.ctx.fillStyle = "rgba(255,255,255,"+a+")";
+	this.ctx.rect(0, 0, 640, 480);
+	this.ctx.fill();
+	this.flashframe--;
+};
+
 Dachu.prototype.drawCursor = function () {
 	this.canvas.style = "cursor: none;";
 	this.ctx.globalCompositeOperation = "difference";
@@ -87,8 +96,25 @@ Dachu.prototype.drawCursor = function () {
 	var bbr = this.canvas.getBoundingClientRect();
 	var mx = gmx - bbr.left;
 	var my = gmy - bbr.top;
-	this.drawText(".", mx-8, my-17, 20, 20, 10); //rect won't work, too lazy to fix it
+	this.drawText(".", mx-8, my-17, 20, 20, 10);
 	this.ctx.globalCompositeOperation = "source-over";
+};
+
+Dachu.prototype.drawStats = function () {
+	var fs = this.ctx.fillStyle;
+	var ol = this.ctx.strokeStyle;
+	this.ctx.fillStyle = "#0f0";
+	this.ctx.fillRect(400, 0, (this.ply.hp*50), 5);
+	this.ctx.fillStyle = fs;
+	this.ctx.strokeStyle = ol;
+	if (this.ply.hp <= 0) {
+		this.drawText("R.I.P. DACHU", 300, 200, 20, 20, 10);
+		if (this.riptime <= 0) {
+			location.reload();
+		} else {
+			this.riptime--;
+		}
+	}
 };
 
 Dachu.prototype.drawText = function (text, x, y, sx, sy, s) {

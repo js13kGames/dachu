@@ -27,9 +27,13 @@ var Dachu = function () {
 		framewait: 0,
 		jumpreset: true,
 		hasgun: false,
+		hp: 5,
 		keysdown: {}
 	};
 	this.creatures = [];
+	this.bullets = [];
+	this.scraps = [];
+	this.scrapsleft = 3;
 	this.stage = 0;
 	//</editor-fold>
 
@@ -61,10 +65,12 @@ var Dachu = function () {
 		this.pollInput();
 		this.generateStars();
 		this.populateEnemies();
-		this.readMusic(title);
+		this.populateScraps();
+		if (!(!(window.ActiveXObject) && "ActiveXObject" in window)) this.readMusic(title);
 		this.update();
 	};
 	this.update = function() {
+		//sorry this is a mess, never had time to refactor
 		if (this.stage == 0) {
 			bc("#000011", this.ctx);
 			this.drawStars();
@@ -94,6 +100,7 @@ var Dachu = function () {
 						this.stage = 2;
 						this.loadMap(0);
 						this.fadeIn();
+						if (!(!(window.ActiveXObject) && "ActiveXObject" in window)) this.readMusic(world);
 					}
 				}
 			}
@@ -111,6 +118,7 @@ var Dachu = function () {
 				this.drawText("AND LEFT THIS PORTAL", 0-this.cam.x+1500, 250, 20, 20, 15);
 			}
 			if (this.ply.pos.x > (43*32)) {
+				this.flashIn();
 				this.loadMap(1);
 				this.stage = 3;
 				this.ply.pos.x = 3*32;
@@ -126,19 +134,46 @@ var Dachu = function () {
 			this.ctx.fillStyle = grd;
 			this.ctx.fillRect(0, 0, 640, 480);
 			this.ctx.fillStyle = fs;
+			this.drawText("COLLECT THREE SCRAPS", 0-this.cam.x+400, 0-this.cam.y+350, 20, 20, 15);
+			this.drawText("OF MY UFO TO FIX IT", 0-this.cam.x+400, 0-this.cam.y+400, 20, 20, 15);
 		}
 		if (this.stage == 2 || this.stage == 3) {
 			this.drawTerrain();
-			this.drawPlayer();
+			if (this.ply.hp > 0) {
+				this.drawPlayer();
+				this.drawGun();
+				this.drawBullets();
+			}
 			if (this.stage == 3) this.drawBlobos();
-			this.drawGun();
+			if (this.stage == 3) this.drawScraps();
 			this.updateCamera();
-			this.movePlayer();
+			if (this.ply.hp > 0) this.movePlayer();
 			if (this.stage == 3) this.moveBlobos();
+			this.drawStats();
 			if (this.fadeframe != 0) {
 				this.fadeIn();
 			}
+			if (this.flashframe != 0) {
+				this.flashIn();
+			}
+			if (this.ply.pos.y > 1792) this.ply.hp = 0;
+			if (this.scrapsleft <= 0) {
+				this.drawText("IT IS FIXED. LETS GET OUT OF HERE.", 50, 350, 20, 20, 15);
+				this.drawPortal(37,50);
+				if (this.ply.pos.x > (37*32) &&
+						this.ply.pos.y > (49*32)) {
+					this.stage = 4;
+					this.fadeOut();
+				}
+			}
 			this.drawCursor();
+		}
+		if (this.stage == 4) {
+			this.ctx.fillStyle = "#000";
+			this.ctx.fillRect(0, 0, 640, 480);
+			this.drawText("DACHU", 200, 250, 20, 20, 15);
+			this.drawText("CREATED IN NINE DAYS?", 50, 300, 20, 20, 15);
+			this.drawText("THANKS FOR PLAYING.", 50, 350, 20, 20, 15);
 		}
 		window.requestAnimFrame(function() { self.update(); });
 	};
@@ -149,6 +184,7 @@ var Dachu = function () {
 	this.asteroidframe = 700;
 	this.fadeframe = 0;
 	this.portalframe = 0;
+	this.flashframe = 0;
 	this.shipfire = false;
 	this.stars = [];
 	//</editor-fold>
@@ -177,10 +213,11 @@ var Dachu = function () {
 	this.mapWidth = 50;
 	this.mapHeight = 9;
 	this.tileSetWidth = 6;
+	this.riptime = 600;
 	this.map = [];
 	//</editor-fold>
 
 	//<editor-fold> input
-	this.disableInput();
+	this.setupInput();
 	//</editor-fold>
 }

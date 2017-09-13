@@ -2,7 +2,8 @@
 //input
 
 //https://stackoverflow.com/a/8916697
-Dachu.prototype.disableInput = function () {
+Dachu.prototype.setupInput = function () {
+	var that = this;
 	window.addEventListener("keydown", function(e) {
 	    if(e.keyCode == 32) {
 	        e.preventDefault();
@@ -10,6 +11,9 @@ Dachu.prototype.disableInput = function () {
 	}, false);
 	document.addEventListener("contextmenu", function(e) {
 		e.preventDefault();
+	}, false);
+	document.addEventListener('click', function() {
+		if (that.ply.hasgun) that.shootGun();
 	}, false);
 };
 
